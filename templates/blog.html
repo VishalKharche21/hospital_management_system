@@ -1,0 +1,100 @@
+{% extends 'doctordashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<!-- ===============bradcrumb==================== -->
+
+
+
+<div class="page-breadcrumb ">
+    <div class="row align-items-center bg-white">
+        <div class="col-md-6 col-8 align-self-center">
+            <h3 class="page-title mb-0 p-0 mt-2">Create Blog</h3>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>';">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ===============bradcrumb end==================== -->
+<div class="col-lg-12 col-xlg-10 mt-4">
+    <div class="card">
+        <div class="tab-content">
+            <div>
+                <strong>Add Blog</strong>
+            </div>
+            <hr>
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="titleid">Title</label>
+                        <input type="text" name="title" id="titleid" class="form-control">
+                    </div>
+                    <div class="col-md-8 mt-2">
+                        <label for="categoryid">Category</label>
+                        <select name="category" id="categoryid" class="form-control">
+                            <option value="">---select a category---</option>
+                            <option value="Mental Health">Mental Health</option>
+                            <option value="Heart Disease">Heart Disease</option>
+                            <option value="Covid19">Covid19</option>
+                            <option value="Immunization">Immunization</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                        <label for="summary" class="form-label">Summary</label>
+                        <textarea name="summary" id="summary" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                        <label for="contentid" class="form-label">Content</label>
+                        <textarea name="content" id="contentid" class="form-control" rows="6"></textarea>
+                    </div>
+                    <div class="col-md-8 mt-2">
+                        <label for="draft">Draft</label>
+                        <input type="checkbox" name="draft" id="draft" value="Yes">
+                    </div>
+                    <div>
+                        <input type="file" multiple name="file" class="form-control mb-3">
+                    </div>
+                    <div class="col-md-8">
+                        <input type="submit" name="" id="" class="btn btn-success">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'js/message.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'info' %}
+<script>
+    swal({
+        text: "{{message}}",
+    }).then(function () {
+        window.location = "";
+    });
+</script>
+{% else %}
+<script>
+    swal({
+        text: "{{message}}",
+        icon: "success",
+    }).then(function () {
+        window.location = "";
+    });
+</script>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% endblock content %}

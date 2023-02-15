@@ -1,0 +1,84 @@
+{% extends 'homebase.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+    .mx {
+        margin-top: 80px;
+    }
+
+    .form-content {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+</style>
+<div class="container jumbotron mx">
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        <div class="container register-form">
+            <div class="form">
+                <div class="note">
+                    <h1>Register In Hospital</h1>
+                </div>
+
+                <div class="form-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{userForm.first_name|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{userForm.last_name|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{userForm.email|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{userForm.username|as_crispy_field}}
+
+                        </div>
+                        <div class="col-md-6">
+                            {{doctorForm.mobile|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{doctorForm.address|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{userForm.password1|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{userForm.password2|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+
+                            {{doctorForm.department|as_crispy_field}}
+                        </div>
+                        <div class="col-md-6">
+                            {{doctorForm.profile_pic|as_crispy_field}}
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content: center;">
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </div>
+                    <div class="text-center">Already have an account? <a href="{% url 'all_login' %}">Login here</a></div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+<script src="{% static 'message.js' %}"></script>
+{% if messages %}
+{% for message in messages %}
+<script>
+    swal({
+        text: "{{message}}",
+        icon: "success",
+    }).then(function () {
+        window.location = "{% url 'all_login' %}";
+    });
+</script>
+{% endfor %}
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,254 @@
+{% load auth_extras %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="{% static 'css/font/typicons.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/vendor.bundle.base.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+  <style>
+    #scroll-to-top-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+
+  <div class="container-scroller">
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+        <a class="navbar-brand brand-logo" href="index.html"><img src="{% static 'images/logo.jpg' %}"
+            class="rounded-circle" alt="logo" width="10" /></a>
+        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo" /></a>
+        <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button"
+          data-toggle="minimize">
+          <span class="typcn typcn-th-menu"></span>
+        </button>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+        <ul class="navbar-nav navbar-nav-right">
+
+
+          <li class="nav-item nav-profile dropdown">
+            <a class="nav-link dropdown-toggle  pl-0 pr-0" href="#" data-toggle="dropdown" id="profileDropdown">
+              <i class="typcn typcn-user-outline mr-0"></i>
+              <span class="nav-profile-name">{{doct.get_name}}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+              <a class="dropdown-item">
+                <i class="typcn typcn-cog text-primary"></i>
+                Settings
+              </a>
+              <a class="dropdown-item" href="{% url 'all_logout' %}">
+                <i class="typcn typcn-power text-primary"></i>
+                Logout
+              </a>
+            </div>
+          </li>
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+          data-toggle="offcanvas">
+          <span class="typcn typcn-th-menu"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="container-fluid page-body-wrapper">
+
+
+
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <div class="d-flex sidebar-profile">
+              <div class="sidebar-profile-image">
+                <img src="{{ doct.profile_pic.url }}" alt="image">
+                <span class="sidebar-status-indicator"></span>
+              </div>
+              <div class="sidebar-profile-name">
+
+                <p class="sidebar-name">
+                  {{doct.get_name}}
+                </p>
+
+
+
+                {% if request.user|has_group:"DOCTOR" %}
+                <p class="sidebar-designation">
+                  Welcome Doctor
+                </p>
+                {% elif request.user|has_group:"PATIENT" %}
+                <p class="sidebar-designation">
+                  Welcome Patient
+                </p>
+                {% endif %}
+
+              </div>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'doctor_dashboard' %}">
+
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+          {% if perms.hms.add_blog %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'blog' %}">
+              <span class="menu-title">Blog</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'draft' %}">
+
+              <span class="menu-title">Draft</span>
+            </a>
+          </li>
+          {% endif %}
+
+
+        </ul>
+      </nav>
+
+    
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          
+
+          {% block content %}
+          <div class="row  mt-3">
+
+            {% for i in blog %}
+            {% if i.is_draft == 'No' %}
+
+            <div class="card mt-2">
+              <div class="card-header d-flex align-items-center bg-white">
+                {% for j in data %}
+                {% if i.doctor == j.id %}
+                <img src="{{ j.profile_pic.url }}" class="rounded-circle mr-3" alt="User Profile Pic" width="40"
+                  height="40">
+                <h4 class="mb-0">{{ j.get_name }}</h4>
+                {% endif %}
+                {% endfor %}
+              </div>
+              <div class="card-body">
+                <h4 class="card-title bg-light p-2">{{ i.category }}</h4>
+                {% for image in img %}
+                {% if i.id == image.imgid %}
+                <img src="{{ image.images.url }}" class="img-fluid mb-3" alt="Blog Image">
+                {% endif %}
+                {% endfor %}
+                <h4 class="card-title"><span class="bg-info text-white">{{ i.title }}</span></h4>
+                <p class="card-text summary">{{ i.Summary }}</p>
+                <hr>
+                <p class="card-text content">{{ i.content }}</p>
+                <p class="card-text"><small class="text-muted">{{ i.created_at|date:"F d, Y" }}</small></p>
+              </div>
+            </div>
+
+
+            {% endif %}
+            {% endfor %}
+          </div>
+
+          {% endblock content %}
+          <button id="scroll-to-top-btn" class="btn btn-primary btn-sm" style="display: none;">
+            Scroll to top
+          </button>
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-center text-sm-left d-block d-sm-inline-block">Copyright © <a href=""
+                  target="_blank">Vishal Kharche</a> 2023</span>
+
+            </div>
+          </footer>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <script src="{% static 'js/vendor.bundle.base.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/off-canvas.js' %}"></script>
+    <script src="{% static 'js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'js/template.js' %}"></script>
+    <script src="{% static 'js/settings.js' %}"></script>
+    <script src="{% static 'js/todolist.js' %}"></script>
+
+    <script src="{% static 'js/progressbar.min.js' %}"></script>
+    <script src="{% static 'js/Chart.min.js' %}"></script>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script>
+      var btn = document.getElementById("scroll-to-top-btn");
+
+      // Show the button when the user scrolls down 20 pixels from the top of the document
+      window.onscroll = function () {
+        if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+          btn.style.display = "block";
+        } else {
+          btn.style.display = "none";
+        }
+      };
+      // Scroll to the top of the document when the button is clicked
+      btn.onclick = function () {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+      };
+
+      var summaries = $('.summary');
+      summaries.each(function () {
+        var summary = $(this);
+        var words = summary.text().split(' ');
+        if (words.length > 15) {
+          var truncated = words.slice(0, 15).join(' ');
+          summary.text(truncated + '...');
+          var readMore = $('<a href="#" class="read-more">Read more</a>');
+          summary.after(readMore);
+          readMore.on('click', function (event) {
+            event.preventDefault();
+            summary.text(words.join(' '));
+            readMore.hide();
+          });
+        }
+      });
+      var contentv = $('.content');
+      contentv.each(function () {
+        var content = $(this);
+        var words = content.text().split(' ');
+        if (words.length > 80) {
+          var truncated = words.slice(0, 80).join(' ');
+          content.text(truncated + '...');
+          var readMore = $('<a href="#" class="read-more">Read more</a>');
+          content.after(readMore);
+          readMore.on('click', function (event) {
+            event.preventDefault();
+            content.text(words.join(' '));
+            readMore.hide();
+          });
+        }
+      });
+    </script>
+
+</body>
+
+</html>
